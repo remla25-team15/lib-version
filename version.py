@@ -31,6 +31,3 @@ class VersionUtil:
         except Exception:
             return "unknown"
 
-if __name__ == "__main__":
-    version = VersionUtil.get_version()
-    print(f"Extracted version: {version}")
