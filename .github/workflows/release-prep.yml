@@ -1,0 +1,41 @@
+name: Prepare Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+-release"
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        run: |
+          RAW_TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${RAW_TAG%-release}
+          echo "version=$VERSION" >> $GITHUB_ENV
+
+      - name: Update version.txt
+        run: |
+          echo "$version" > version.txt
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git checkout main
+          git add version.txt
+          git commit -m "Update version.txt to $version"
+          git push origin main
+
+
+      - name: Trigger Release workflow
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.REMLA_GITHUB_TOKEN }}
+          event-type: version-update
+          client-payload: '{"version": "${{ env.version }}"}'
