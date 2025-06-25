@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
+
     steps:
       - name: Checkout current branch
         uses: actions/checkout@v4
@@ -22,7 +23,7 @@ jobs:
           VERSION=${RAW_TAG%-release}
           echo "version=$VERSION" >> $GITHUB_ENV
 
-      - name: Update version.txt
+      - name: Update version.txt and push to main
         run: |
           echo "$version" > version.txt
           git config --local user.email "action@github.com"
@@ -31,7 +32,6 @@ jobs:
           git add version.txt
           git commit -m "Update version.txt to $version"
           git push origin main
-
 
       - name: Trigger Release workflow
         uses: peter-evans/repository-dispatch@v3
