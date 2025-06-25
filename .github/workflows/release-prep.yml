@@ -11,10 +11,12 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout main
+      - name: Checkout current commit 
         uses: actions/checkout@v4
-        with:
-          ref: main
+    #   - name: Checkout main
+    #     uses: actions/checkout@v4
+    #     with:
+    #       ref: main
 
       - name: Extract version from tag
         run: |
@@ -29,7 +31,8 @@ jobs:
           git config --local user.name "GitHub Action"
           git add version.txt
           git commit -m "Update version.txt to $version"
-          git push origin main
+          git push origin 
+        #   git push origin main
 
       - name: Tag and push vX.Y.Z
         run: |
