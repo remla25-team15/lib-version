@@ -14,7 +14,7 @@ jobs:
       - name: Checkout current branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          fetch-depth: 0
 
       - name: Extract version from tag
         run: |
@@ -27,9 +27,10 @@ jobs:
           echo "$version" > version.txt
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git checkout tagged-release
           git add version.txt
           git commit -m "Update version.txt to $version"
-          git push origin HEAD
+          git push origin tagged-release
 
       - name: Create and push tag to trigger Release workflow
         run: |
