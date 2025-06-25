@@ -1,56 +1,16 @@
 name: Release
 on:
   push:
-    tags: ["v[0-9]+.[0-9]+.[0-9]+-release"]
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
 jobs:
-  update-version:
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: Parse version info from tag
-        run: |
-          # Extract version from tag (e.g., v1.2.3-release -> v1.2.3)
-          VERSION=${GITHUB_REF:11}
-          VERSION=${VERSION%-release}
-          echo "version=$VERSION" >> $GITHUB_ENV
-      - name: Update version.txt
-        run: |
-          echo "${{ env.version }}" > version.txt
-      - name: Commit and push version update
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add version.txt
-          git commit -m "Update version.txt for release ${{ env.version }}"
-          git push origin main
-
-  create-release:
-    needs: update-version
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.REMLA_GITHUB_TOKEN }}
-
   build:
-    needs: create-release
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Parse version info from tag
         run: |
-          # GITHUB_REF is like refs/tags/v2.3.5, so strip the first 11 chars          VERSION=${GITHUB_REF:11}
+          # GITHUB_REF is like refs/tags/v2.3.5, so strip the first 11 chars
+          VERSION=${GITHUB_REF:11}
           MAJOR=`echo "$VERSION" | cut -d . -f 1`
           MINOR=`echo "$VERSION" | cut -d . -f 2`
           PATCH=`echo "$VERSION" | cut -d . -f 3`
@@ -71,3 +31,18 @@ jobs:
         with:
           name: libversion-dist
           path: dist/
+  create-release:
+      needs: build
+      runs-on: ubuntu-24.04
+      permissions:
+        contents: write
+      steps:
+        - name: Create GitHub Release
+          uses: actions/create-release@v1
+          with:
+            tag_name: ${{ github.ref_name }}
+            release_name: Release ${{ github.ref_name }}
+            draft: false
+            prerelease: false
+          env:
+            GITHUB_TOKEN: ${{ secrets.REMLA_GITHUB_TOKEN }}
