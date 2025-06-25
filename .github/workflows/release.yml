@@ -11,17 +11,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.parse_version.outputs.version_number }}
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Parse version info
+        id: parse_version
         run: |
           if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
             VERSION=${{ github.event.client_payload.version }}
           else
             VERSION=${GITHUB_REF#refs/tags/}
           fi
+          echo "version_number=$VERSION" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION"
           MAJOR=$(echo "$VERSION" | cut -d . -f 1)
@@ -58,8 +62,8 @@ jobs:
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: ${{ needs.build.outputs.version }}
+          release_name: Release ${{ needs.build.outputs.version }}
           draft: false
           prerelease: false
         env:
