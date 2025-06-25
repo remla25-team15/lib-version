@@ -36,5 +36,6 @@ jobs:
         run: |
           RAW_TAG=${GITHUB_REF#refs/tags/}
           VERSION=${RAW_TAG%-release}
+          git checkout tagged-release
           git tag $VERSION
           git push origin $VERSION
