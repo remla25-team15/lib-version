@@ -32,11 +32,23 @@ jobs:
           git commit -m "Update version.txt to $version"
           git push origin tagged-release
 
+      - name: Check if PAT is available
+        run: |
+          if [ -z "${{ secrets.REMLA_GITHUB_TOKEN }}" ]; then
+          echo "PAT not set or not visible to this repo."
+          exit 1
+          else
+          echo "PAT is set correctly."
+          fi
+
       - name: Create and push tag to trigger Release workflow
+        env:
+          PAT: ${{ secrets.REMLA_GITHUB_TOKEN }}
         run: |
           VERSION=$(echo "${GITHUB_REF#refs/tags/}" | cut -d '-' -f 1)
           echo "Extracted version: $VERSION"
 
-          git checkout tagged-release
           git tag "$VERSION"
+
+          git remote set-url origin https://x-access-token:${PAT}@github.com/${{ github.repository }}
           git push origin "$VERSION"
