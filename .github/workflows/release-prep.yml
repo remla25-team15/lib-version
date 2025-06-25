@@ -41,14 +41,9 @@ jobs:
           echo "PAT is set correctly."
           fi
 
-      - name: Create and push tag to trigger Release workflow
-        env:
-          PAT: ${{ secrets.REMLA_GITHUB_TOKEN }}
-        run: |
-          VERSION=$(echo "${GITHUB_REF#refs/tags/}" | cut -d '-' -f 1)
-          echo "Extracted version: $VERSION"
-
-          git tag "$VERSION"
-
-          git remote set-url origin https://x-access-token:${PAT}@github.com/${{ github.repository }}
-          git push origin "$VERSION"
+      - name: Trigger Release workflow
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.REMLA_GITHUB_TOKEN }}
+          event-type: version-update
+          client-payload: '{"version": "${{ env.version }}"}'

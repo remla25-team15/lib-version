@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
+  repository_dispatch:
+    types: [version-update]
 
 jobs:
   build:
@@ -12,9 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Parse version info from tag
+      - name: Parse version info
         run: |
-          VERSION=${GITHUB_REF#refs/tags/}
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            VERSION=${{ github.event.client_payload.version }}
+          else
+            VERSION=${GITHUB_REF#refs/tags/}
+          fi
           echo "version=$VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION"
           MAJOR=$(echo "$VERSION" | cut -d . -f 1)
