@@ -34,8 +34,9 @@ jobs:
 
       - name: Create and push tag to trigger Release workflow
         run: |
-          RAW_TAG=${GITHUB_REF#refs/tags/}
-          VERSION=${RAW_TAG%-release}
+          VERSION=$(echo "${GITHUB_REF#refs/tags/}" | cut -d '-' -f 1)
+          echo "Extracted version: $VERSION"
+
           git checkout tagged-release
-          git tag $VERSION
-          git push origin $VERSION
+          git tag -a "$VERSION" -m "Trigger release workflow"
+          git push origin "$VERSION"
