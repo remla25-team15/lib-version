@@ -27,19 +27,11 @@ jobs:
           echo "$version" > version.txt
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git checkout tagged-release
+          git checkout main
           git add version.txt
           git commit -m "Update version.txt to $version"
-          git push origin tagged-release
+          git push origin main
 
-      - name: Check if PAT is available
-        run: |
-          if [ -z "${{ secrets.REMLA_GITHUB_TOKEN }}" ]; then
-          echo "PAT not set or not visible to this repo."
-          exit 1
-          else
-          echo "PAT is set correctly."
-          fi
 
       - name: Trigger Release workflow
         uses: peter-evans/repository-dispatch@v3
