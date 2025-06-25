@@ -15,10 +15,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-    #   - name: Checkout main
-    #     uses: actions/checkout@v4
-    #     with:
-    #       ref: main
 
       - name: Extract version from tag
         run: |
@@ -33,9 +29,11 @@ jobs:
           git config --local user.name "GitHub Action"
           git add version.txt
           git commit -m "Update version.txt to $version"
-          git push origin ${{ github.ref }}
+          git push origin HEAD
 
-      - name: Tag and push vX.Y.Z
+      - name: Create and push tag to trigger Release workflow
         run: |
-          git tag $version
-          git push origin $version:${{ github.ref }}
+          RAW_TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${RAW_TAG%-release}
+          git tag $VERSION
+          git push origin $VERSION
