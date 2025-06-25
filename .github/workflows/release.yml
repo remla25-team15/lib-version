@@ -1,5 +1,4 @@
 name: Release
-
 run-name: ${{ github.event_name == 'push' && github.ref_name || github.event.client_payload.version }}
 
 on:
@@ -31,9 +30,6 @@ jobs:
           echo "version_major=$MAJOR" >> $GITHUB_ENV
           echo "version_minor=$MINOR" >> $GITHUB_ENV
           echo "version_patch=$PATCH" >> $GITHUB_ENV
-
-
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -61,8 +57,8 @@ jobs:
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.version }}
-          release_name: Release ${{ env.version }}
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
         env:
