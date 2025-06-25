@@ -1,3 +1,4 @@
+
 name: Release
 
 on:
@@ -29,20 +30,6 @@ jobs:
           echo "version_major=$MAJOR" >> $GITHUB_ENV
           echo "version_minor=$MINOR" >> $GITHUB_ENV
           echo "version_patch=$PATCH" >> $GITHUB_ENV
-
-      - name: Create tag if missing (repository_dispatch only)
-        if: github.event_name == 'repository_dispatch'
-        run: |
-          git fetch --tags
-          if git rev-parse "$VERSION" >/dev/null 2>&1; then
-            echo "Tag $VERSION already exists."
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git tag "$VERSION"
-            git push origin "$VERSION"
-          fi
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -65,14 +52,14 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
-    if: github.event_name == 'repository_dispatch' && github.event.client_payload.release == true
+    if: github.event_name == 'repository_dispatch' 
 
     steps:
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ github.event.client_payload.version }}
-          release_name: Release ${{ github.event.client_payload.version }}
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
         env:
