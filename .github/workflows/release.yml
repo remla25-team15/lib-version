@@ -52,6 +52,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
+    if: github.event_name == 'repository_dispatch' && github.event.client_payload.release == true
 
     steps:
       - name: Create GitHub Release

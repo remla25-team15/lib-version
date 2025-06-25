@@ -38,4 +38,4 @@ jobs:
         with:
           token: ${{ secrets.REMLA_GITHUB_TOKEN }}
           event-type: version-update
-          client-payload: '{"version": "${{ env.version }}"}'
+          client-payload: '{"version": "${{ env.version }}", "release": true}'
