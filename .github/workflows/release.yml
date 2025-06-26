@@ -15,7 +15,15 @@ jobs:
       version: ${{ steps.parse_version.outputs.version_number }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout main branch on dispatch
+        if: github.event_name == 'repository_dispatch'
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Checkout tag on push
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
 
       - name: Parse version info
         id: parse_version
