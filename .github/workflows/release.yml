@@ -43,7 +43,7 @@ jobs:
 
   create-release:
     runs-on: ubuntu-24.04
-    needs: build-and-push
+    needs: build
     permissions:
       contents: write
     steps:
