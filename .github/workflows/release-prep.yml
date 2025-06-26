@@ -30,10 +30,10 @@ jobs:
           git add libversion/version_self.py
           git commit -m "Update version_self.py to $version"
           git push origin main
-      - name: Trigger Release workflow
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.REMLA_GITHUB_TOKEN }}
-          event-type: version-update
-          client-payload: '{"version": "${{ env.version }}"}'
+      - name: Create release tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.REMLA_TOKEN }}
+        run: |
+          git tag "$version"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} "$version"
 
