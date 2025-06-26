@@ -1,4 +1,3 @@
-
 name: Release
 
 on:
@@ -28,11 +27,7 @@ jobs:
       - name: Parse version info
         id: parse_version
         run: |
-          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            VERSION=${{ github.event.client_payload.version }}
-          else
-            VERSION=${GITHUB_REF#refs/tags/}
-          fi
+          VERSION=${GITHUB_REF#refs/tags/}
           echo "version_number=$VERSION" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION"
@@ -64,7 +59,6 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
-    if: github.event_name == 'repository_dispatch' 
 
     steps:
       - name: Create GitHub Release
@@ -76,3 +70,4 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.REMLA_GITHUB_TOKEN }}
+
