@@ -37,3 +37,14 @@ jobs:
           git tag "$version"
           git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} "$version"
 
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh
+
+      - name: Trigger Release workflow manually
+        env:
+          GH_TOKEN: ${{ secrets.REMLA_TOKEN }}
+        run: |
+          gh workflow run release.yml \
+            --repo ${{ github.repository }} \
+            --ref $version
+
