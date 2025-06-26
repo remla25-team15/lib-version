@@ -1,0 +1,5 @@
+Metadata-Version: 2.4
+Name: libversion
+Version: 1.6.3
+Requires-Dist: toml>=0.10.2
+Dynamic: requires-dist

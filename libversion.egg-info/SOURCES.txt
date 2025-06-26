@@ -1,0 +1,11 @@
+MANIFEST.in
+README.md
+setup.py
+version.txt
+libversion/__init__.py
+libversion/version.py
+libversion.egg-info/PKG-INFO
+libversion.egg-info/SOURCES.txt
+libversion.egg-info/dependency_links.txt
+libversion.egg-info/requires.txt
+libversion.egg-info/top_level.txt

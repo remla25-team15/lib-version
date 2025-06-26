@@ -26,9 +26,9 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git checkout main
-          echo "$version" > version.txt
-          git add version.txt
-          git commit -m "Update version.txt to $version"
+          echo "${version#v}" > libversion/version_self.py
+          git add libversion/version_self.py
+          git commit -m "Update version_self.py to $version"
           git push origin main
       - name: Trigger Release workflow
         uses: peter-evans/repository-dispatch@v3
@@ -36,3 +36,4 @@ jobs:
           token: ${{ secrets.REMLA_GITHUB_TOKEN }}
           event-type: version-update
           client-payload: '{"version": "${{ env.version }}"}'
+

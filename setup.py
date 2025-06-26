@@ -5,7 +5,7 @@ def get_version():
     import os
 
     here = os.path.abspath(os.path.dirname(__file__))
-    with open(os.path.join(here, "version.txt")) as f:
+    with open(os.path.join(here, "libversion/version_self.py")) as f:
         return f.read().strip()
 
 
