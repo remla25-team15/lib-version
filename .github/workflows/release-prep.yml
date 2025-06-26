@@ -23,10 +23,10 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_ENV
       - name: Update version.txt
         run: |
-          echo "$version" > version.txt
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git checkout main
+          echo "$version" > version.txt
           git add version.txt
           git commit -m "Update version.txt to $version"
           git push origin main
